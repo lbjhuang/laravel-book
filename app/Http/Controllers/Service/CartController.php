@@ -24,7 +24,7 @@ class CartController extends Controller
     foreach ($bk_cart_arr as &$value) {     //必须是引用传递
       $index = strpos($value, ':');  //返回冒号出现的位置
       if(substr($value, 0, $index) == $product_id){
-        $count = ((int)substr($value, $index+1)) +1; //冒号后面的数目是书本的数量，点击加入购物车一次则加一
+        $count = ((int)substr($value, $index+1)) +1; //冒号后面的数目是书本的数量，点击加入购物车则添加到cookie中
         $value = $product_id. ":" .$count;
         break;
       }
