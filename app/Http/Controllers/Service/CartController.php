@@ -11,6 +11,7 @@ use App\Entity\PdtContent;
 use App\Entity\PdtImages;
 use App\Entity\CartItem;
 use Log;
+use Symfony\Component\Yaml\Tests\B;
 
 class CartController extends Controller
 {
@@ -37,10 +38,30 @@ class CartController extends Controller
     return response($basicReturn->toJson(0,'添加成功'))->withCookie('bk_cart', implode(',', $bk_cart_arr)); //存cookie
   }
 
-  public function toProduct($category_id)
+  public function delCart(Request $request)
   {
+    $basicReturn = new BasicReturn();
+    $product_ids = $request->input('product_ids', '');
+    if($product_ids == ''){
+      return $basicReturn->toJson(1,'书籍id不能为空');
+    }
+    $product_ids_arr = explode(',' ,$product_ids);
+    //未登录
+    $bk_cart = $request->cookie('bk_cart'); //获取购物车书籍信息
+    $bk_cart_arr = ($bk_cart!=null? explode(',',$bk_cart) : array());
 
+    foreach($bk_cart_arr as $key=>$value){
+      $index = strpos($value, ':');
+      $product_id = substr($value, 0, $index);
+      if(in_array($product_id, $product_ids_arr)){  //如果该书籍id在cookie的ids数组里面则删除掉它
+        array_splice($bk_cart_arr, $key, 1);
+        continue;
+      }
+    }
+    //将修改之后的数组重新存放在cookie中
+    return response($basicReturn->toJson(0, '删除成功'))->withCookie('bk_cart', implode(',', $bk_cart_arr));
   }
+
 
   public function toPdtContent(Request $request, $product_id)
   {

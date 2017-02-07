@@ -19,6 +19,7 @@ Route::get('/login', 'View\MemberController@toLogin');
 Route::get('/category', 'View\BookController@toCategory');
 Route::get('/product/category_id/{category_id}', 'View\BookController@toProduct');
 Route::get('/product/{product_id}', 'View\BookController@toPdtContent');
+Route::get('/cart', 'View\CartController@toCart');
 
 //路由分组---服务端接口组
 Route::group(['prefix' => 'service'], function(){
@@ -30,5 +31,10 @@ Route::group(['prefix' => 'service'], function(){
     Route::get('validate_email', 'Service\ValidateController@validateEmail');
     Route::get('category/parent_id/{parent_id}', 'Service\BookController@getCategoryByParentId');
     Route::get('cart/add/{product_id}', 'Service\CartController@addCart');
+    Route::get('cart/delete', 'Service\CartController@delCart');
 });
 
+//检测登录的中间件,把要使用到该中间件的相应的路由放进来
+Route::group(['middleware'=>'check.login'], function(){
+
+});
